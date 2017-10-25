@@ -6,16 +6,19 @@ This is a web crawler written in Python. You will have to install request, Beaut
 ### Install requests
 
 run the following command in terminal
+
 	pip install BeautifulSoup
 
 ### Install BeautifulSoup
 
 run the following command in terminal
+	
 	pip install BeautifulSoup
 
 ### Install pandas
 
 run the following command in terminal
+	
 	pip install pandas
 
 
