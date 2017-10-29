@@ -10,8 +10,8 @@ import pandas as pd
 # data-job-title="Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)" data-type="organic" data-rank="3" data-page="1" data-posting-country="SG">
 # <h2 itemprop="title">Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)</h2></a>
 def linksByKeys(keys):
-	## params
-	## keys: a list of strings
+    ## params
+    ## keys: a list of strings
     links_dic = {}
     # scrape key words one by one
     for key in keys:
@@ -22,31 +22,31 @@ def linksByKeys(keys):
 
 # get all position <a> tags by a single key word, called by linksByKeys
 def linksByKey(key):
-	## params
-	## key: a string
+    ## params
+    ## key: a string
 
-	# parameters passed to  http get/post function
-	base_url = 'https://www.jobstreet.com.sg/en/job-search/job-vacancy.php'
-	pay_load = {'key':'','area':1,'option':1,'pg':None,'classified':1,'src':16,'srcr':12}
-	pay_load['key'] = key
-	# page number
-	pn = 1
-	position_links = []
-	loaded = True
-	while loaded:
-		print('Loading page {} ...'.format(pn))
-		pay_load['pg'] = pn
-		r = requests.get(base_url,params=pay_load)
-		# extract position <a> tags
-		soup = BeautifulSoup(r.text,'html.parser')
-		links = soup.find_all('a',{'class':'position-title-link'})
-		# if return nothing, means the function reach the last page, return results
-		if not len(links):
-			loaded = False
-		else:
-			position_links += links
-			pn += 1
-	return position_links
+    # parameters passed to  http get/post function
+    base_url = 'https://www.jobstreet.com.sg/en/job-search/job-vacancy.php'
+    pay_load = {'key':'','area':1,'option':1,'pg':None,'classified':1,'src':16,'srcr':12}
+    pay_load['key'] = key
+    # page number
+    pn = 1
+    position_links = []
+    loaded = True
+    while loaded:
+        print('Loading page {} ...'.format(pn))
+        pay_load['pg'] = pn
+        r = requests.get(base_url,params=pay_load)
+        # extract position <a> tags
+        soup = BeautifulSoup(r.text,'html.parser')
+        links = soup.find_all('a',{'class':'position-title-link'})
+        # if return nothing, means the function reach the last page, return results
+        if not len(links):
+            loaded = False
+        else:
+            position_links += links
+            pn += 1
+    return position_links
 
 # process the information of a position <a> tag
 # <a> tag example:
@@ -56,20 +56,20 @@ def linksByKey(key):
 def parseLinks(links_dic):
     # process position <a> tags one by one
     for key in links_dic:
-		jobs = []
-		for link in links_dic[key]:
-		    jobs.append([key] + parseLink(link))
-		# transfrom the result to a pandas.DataFrame
-		result = pd.DataFrame(jobs,columns=['key_word','job_id','job_title','country','job_link','company','company_region','company_industry','company_size','experence_requirement','working_location','description'])
-		# add a column denoting if the position is posted by a recuriter company
-		result['postedByHR'] = result.company_industry.apply(lambda x:True if x and x.find('Human Resources')>-1 else False)
-		# save result, 
-		file_name = key+'.csv'
-		result.to_csv(file_name,index=False)
+        jobs = []
+        for link in links_dic[key]:
+            jobs.append([key] + parseLink(link))
+        # transfrom the result to a pandas.DataFrame
+        result = pd.DataFrame(jobs,columns=['key_word','job_id','job_title','country','job_link','company','company_region','company_industry','company_size','experence_requirement','working_location','description'])
+        # add a column denoting if the position is posted by a recuriter company
+        result['postedByHR'] = result.company_industry.apply(lambda x:True if x and x.find('Human Resources')>-1 else False)
+        # save result, 
+        file_name = key+'.csv'
+        result.to_csv(file_name,index=False)
 
 # process a single position <a> tag, extract the information, called by parseLinks
 def parseLink(link):
-	# unique id assigned to a position
+    # unique id assigned to a position
     job_id = link['data-job-id'].strip()
     # job title
     job_title = link['data-job-title'].strip()
@@ -103,11 +103,11 @@ def getJobDetail(job_href):
     return [company_name,company_location,company_industry,company_size,years_of_experience,job_location,job_description]
 
 def main():
-	# a list of positions to scrape
-	key_words = ['data scientist','data analyst','data engineer']
-	s = requests.session()
-	links_dic = linksByKeys(key_words)
-	parseLinks(links_dic)
+    # a list of positions to scrape
+    key_words = ['data scientist']
+    s = requests.session()
+    links_dic = linksByKeys(key_words)
+    parseLinks(links_dic)
 
-if __name__ == 'main':
-	main()
+main()
+
