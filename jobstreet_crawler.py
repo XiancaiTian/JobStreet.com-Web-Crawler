@@ -109,5 +109,5 @@ def main():
 	links_dic = linksByKeys(key_words)
 	parseLinks(links_dic)
 
-if __name__ == 'main':
+if __name__ == '__main__':
 	main()
