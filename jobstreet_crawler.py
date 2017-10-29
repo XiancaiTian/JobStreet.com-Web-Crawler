@@ -3,15 +3,16 @@ from bs4 import BeautifulSoup # HTML parser
 import pandas as pd
 
 
-# get all position <a> tags by a list of key words
-# <a> tag example:
-# <a class="position-title-link" id="position_title_3" href="https://www.jobstreet.com.sg/en/job/data-analyst-python-sas-sqlbank-35k-to-5k-gd-bonus5-days-west-6111488?fr=21" 
-# target="_blank" title="View Job Details - Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)" data-track="sol-job" data-job-id="6111488" 
-# data-job-title="Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)" data-type="organic" data-rank="3" data-page="1" data-posting-country="SG">
-# <h2 itemprop="title">Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)</h2></a>
+""" get all position <a> tags by a list of key words
+<a> tag example:
+<a class="position-title-link" id="position_title_3" href="https://www.jobstreet.com.sg/en/job/data-analyst-python-sas-sqlbank-35k-to-5k-gd-bonus5-days-west-6111488?fr=21" 
+target="_blank" title="View Job Details - Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)" data-track="sol-job" data-job-id="6111488" 
+data-job-title="Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)" data-type="organic" data-rank="3" data-page="1" data-posting-country="SG">
+<h2 itemprop="title">Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)</h2></a>"""
 def linksByKeys(keys):
-    ## params
     ## keys: a list of strings
+    ## return a dictionary of links
+
     links_dic = {}
     # scrape key words one by one
     for key in keys:
@@ -20,10 +21,11 @@ def linksByKeys(keys):
         print('{} positions found searching with: {}'.format(len(links_dic[key]),key))
     return links_dic
 
-# get all position <a> tags by a single key word, called by linksByKeys
+
+""" get all position <a> tags by a single key word, called by linksByKeys """
 def linksByKey(key):
-    ## params
     ## key: a string
+    ## return a list of links
 
     # parameters passed to  http get/post function
     base_url = 'https://www.jobstreet.com.sg/en/job-search/job-vacancy.php'
@@ -48,13 +50,16 @@ def linksByKey(key):
             pn += 1
     return position_links
 
-# process the information of a position <a> tag
-# <a> tag example:
-# <a class="position-title-link" id="position_title_3" href="https://www.jobstreet.com.sg/en/job/data-analyst-python-sas-sqlbank-35k-to-5k-gd-bonus5-days-west-6111488?fr=21" 
-# target="_blank" title="View Job Details - Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)" data-track="sol-job" data-job-id="6111488" 
-# data-job-title="Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)" data-type="organic" data-rank="3" data-page="1" data-posting-country="SG">
+
+""" process the information of a position <a> tag
+<a> tag example:
+<a class="position-title-link" id="position_title_3" href="https://www.jobstreet.com.sg/en/job/data-analyst-python-sas-sqlbank-35k-to-5k-gd-bonus5-days-west-6111488?fr=21" 
+target="_blank" title="View Job Details - Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)" data-track="sol-job" data-job-id="6111488" 
+data-job-title="Data Analyst (Python / SAS / SQL)(BANK / $3.5K to $5K + GD BONUS / 5 Days / West)" data-type="organic" data-rank="3" data-page="1" data-posting-country="SG">"""
 def parseLinks(links_dic):
-    # process position <a> tags one by one
+    ## links_dic: a dictionary of links
+    ## print final results to .csv file
+
     for key in links_dic:
         jobs = []
         for link in links_dic[key]:
@@ -67,8 +72,12 @@ def parseLinks(links_dic):
         file_name = key+'.csv'
         result.to_csv(file_name,index=False)
 
-# process a single position <a> tag, extract the information, called by parseLinks
+
+""" process a single position <a> tag, extract the information, called by parseLinks """
 def parseLink(link):
+    ## link: single position <a> tag
+    ## return a single position
+
     # unique id assigned to a position
     job_id = link['data-job-id'].strip()
     # job title
@@ -81,8 +90,12 @@ def parseLink(link):
     other_detail = getJobDetail(job_href)
     return [job_id,job_title,country,job_href] + other_detail
 
-# extract details from post detail page
+
+""" extract details from post detail page """
 def getJobDetail(job_href):
+    ## job_href: a post url
+    ## retun post details from the detail page
+
     print('Scraping ',job_href,'...')
     r = requests.get(job_href)
     soup = BeautifulSoup(r.text,'html.parser')
@@ -103,13 +116,12 @@ def getJobDetail(job_href):
     return [company_name,company_location,company_industry,company_size,years_of_experience,job_location,job_description]
 
 def main():
+    
     # a list of positions to scrape
     key_words = ['data scientist']
     s = requests.session()
     links_dic = linksByKeys(key_words)
     parseLinks(links_dic)
-
-main()
 
 if __name__ == '__main__':
 	main()
