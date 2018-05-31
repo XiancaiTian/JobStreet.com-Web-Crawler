@@ -1,6 +1,9 @@
 import requests # data scraping
 from bs4 import BeautifulSoup # HTML parser
 import pandas as pd
+import re
+
+headers = {'User-Agent':'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36'}
 
 
 """ get all position <a> tags by a list of key words
@@ -16,9 +19,9 @@ def linksByKeys(keys):
     links_dic = {}
     # scrape key words one by one
     for key in keys:
-        print('Scraping ',key,' ...')
+        print('Scraping position: ',key,' ...')
         links_dic[key] = linksByKey(key)
-        print('{} positions found searching with: {}'.format(len(links_dic[key]),key))
+        print('{} {} positions found!'.format(len(links_dic[key]),key))
     return links_dic
 
 
@@ -38,10 +41,11 @@ def linksByKey(key):
     while loaded:
         print('Loading page {} ...'.format(pn))
         pay_load['pg'] = pn
-        r = requests.get(base_url,params=pay_load)
+        r = requests.get(base_url, headers=headers, params=pay_load)
         # extract position <a> tags
         soup = BeautifulSoup(r.text,'html.parser')
-        links = soup.find_all('a',{'class':'position-title-link'})
+        #print('soup',soup.body)
+        links = soup.find_all('a',{'class':'position-title-link','data-job-id':re.compile(r'.*')})
         # if return nothing, means the function reach the last page, return results
         if not len(links):
             loaded = False
@@ -75,20 +79,21 @@ def parseLinks(links_dic):
 
 """ process a single position <a> tag, extract the information, called by parseLinks """
 def parseLink(link):
-    ## link: single position <a> tag
-    ## return a single position
 
-    # unique id assigned to a position
-    job_id = link['data-job-id'].strip()
-    # job title
-    job_title = link['data-job-title'].strip()
-    # posted country
-    country = link['data-posting-country'].strip()
-    # the web address towards to the post detail page
-    job_href = link['href']
-    # go to post detail page, and fetch information
-    other_detail = getJobDetail(job_href)
-    return [job_id,job_title,country,job_href] + other_detail
+	## link: single position <a> tag
+	## return a single position
+
+	# unique id assigned to a position
+	job_id = link['data-job-id'].strip()
+	# job title
+	job_title = link['data-job-title'].strip()
+	# posted country
+	country = link['data-posting-country'].strip()
+	# the web address towards to the post detail page
+	job_href = link['href']
+	# go to post detail page, and fetch information
+	other_detail = getJobDetail(job_href)
+	return [job_id,job_title,country,job_href] + other_detail
 
 
 """ extract details from post detail page """

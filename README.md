@@ -7,7 +7,7 @@ This is a web crawler written in Python. You will have to install request, Beaut
 
 run the following command in terminal
 
-	pip install BeautifulSoup
+	pip install requests
 
 ### Install BeautifulSoup
 
@@ -22,16 +22,15 @@ run the following command in terminal
 	pip install pandas
 
 
-
 ### Running the crawler
 
-1) Download the jobstreet_crawler.py file from the repo.
+1) Download jobstreet_crawler.py file from the repo.
 
-2) Change the **key_words** parameters to a list of job roles you want to crawl
+2) Change the **key_words** parameters to a list of job roles you want to crawl, e.g., key_words = ['data scientist', 'java developer']
 
-3) Execute the following in the terminal, and a .csv file will be generated for each key word:
+3) Run the following in terminal, and a .csv file with crawled data will be generated for each key word:
 	
-python3 jobstreet_crawler.py
+python jobstreet_crawler.py
 
-* runnning this crawler doesn't require any of your jobstreet.com account information
+* runnning this script doesn't need any of your jobstreet.com account information
 
