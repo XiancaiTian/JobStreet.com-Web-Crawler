@@ -23,6 +23,6 @@ run the following command in terminal
 
 3) Run the following command in terminal, after crawling a .csv file will be generated for each key word (a sample output file can be found under the repo as well):
 
-	python jobstreet_crawler.py
+		python jobstreet_crawler.py
 
 Notice: this script doesn't require any of your jobstreet.com account information
