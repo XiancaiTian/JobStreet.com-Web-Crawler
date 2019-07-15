@@ -15,7 +15,7 @@ run the following command in terminal
 	pip install pandas
 
 
-### Running the crawler
+### Run the crawler
 
 1) Download jobstreet_crawler.py file from the repo.
 
