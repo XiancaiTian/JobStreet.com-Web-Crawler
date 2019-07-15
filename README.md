@@ -1,4 +1,4 @@
-# job street crawler
+# jobstreet crawler
 
 This is a simple web crawler written in Python.
 Before running the script, please install **reques**, **BeautifulSoup** and **pandas** first.
