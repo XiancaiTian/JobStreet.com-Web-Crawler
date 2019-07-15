@@ -21,7 +21,7 @@ run the following command in terminal
 
 2) Change the **key_words** parameters to a list of job roles you want to crawl, e.g., key_words = ['data scientist', 'java developer']
 
-3) Run the following command in terminal, after crawling a .csv file will be generated for each key word (a sample output file can be found under the repo as well):
+3) Run the following command in terminal to start crawling, after crawling a .csv file will be generated for each job role (a sample output file can be found under the repo as well):
 
 		python jobstreet_crawler.py
 
